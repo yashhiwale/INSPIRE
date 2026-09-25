@@ -1,6 +1,6 @@
 // frontend/src/app/layout.tsx
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Shell } from '@/components/layout/Shell';
 import type { UserRole } from '@/types/roles';
