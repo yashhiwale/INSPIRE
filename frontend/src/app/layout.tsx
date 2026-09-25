@@ -15,11 +15,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'SkillBridge',
-    template: '%s · SkillBridge',
+    default: 'INSPIRE | From Potential to Opportunity',
+    template: '%s · INSPIRE',
   },
   description:
-    'SkillBridge is an AI-powered Academia-Industry Skill Intelligence Platform that maps degree curricula to real-world competencies, surfaces skill gaps, and issues a Verified Skill Passport.',
+    'Intelligent Navigation for Skills, Potential, Industry, Roadmaps & Employment. An AI-powered Academia-Industry collaboration platform.',
   keywords: [
     'skill gap analysis',
     'skill passport',
