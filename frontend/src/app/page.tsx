@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { 
   BrainCircuit, 
@@ -8,10 +11,24 @@ import {
   Building2, 
   Users, 
   LineChart,
-  ArrowRight
+  ArrowRight,
+  Mail, 
+  MapPin, 
+  Phone, 
+  Send, 
+  CheckCircle2, 
+  MessageSquare
 } from "lucide-react";
 
 export default function LandingPage() {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // API POST request will be handled here
+    setIsSubmitted(true);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 scroll-smooth">
       
@@ -57,7 +74,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 2. HOW IT WORKS (The Continuous Loop) */}
+      {/* 2. HOW IT WORKS */}
       <section id="how-it-works" className="py-24 bg-white px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -128,32 +145,178 @@ export default function LandingPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <StakeholderCard icon={<GraduationCap/>} title="Students" desc="Navigate career paths, verify skills, and match with ideal jobs." />
-            <StakeholderCard icon={<Users/>} title="Faculty" desc="Monitor student progress, verify skills, and guide learning journeys." />
+            <StakeholderCard icon={<Users/>} title="Faculty" desc="Monitor progress, verify skills, and guide learning journeys." />
             <StakeholderCard icon={<Building2/>} title="Institutions" desc="Track placement metrics, alumni success, and curriculum alignment." />
             <StakeholderCard icon={<LineChart/>} title="Industry" desc="Access pre-assessed talent with cryptographically verified portfolios." />
           </div>
         </div>
       </section>
 
-      {/* 5. CONTACT / CTA */}
-      <section id="contact" className="py-24 bg-indigo-900 text-white px-4">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h2 className="text-3xl md:text-5xl font-bold">Ready to reshape the future of hiring?</h2>
-          <p className="text-indigo-200 text-lg max-w-2xl mx-auto">
-            Join the INSPIRE ecosystem today and help us bridge the gap between academic potential and industry requirements.
-          </p>
-          <div className="flex justify-center gap-4 pt-6">
-            <Link href="/contact" className="px-8 py-4 bg-white text-indigo-900 font-bold rounded-xl hover:bg-indigo-50 transition-colors shadow-lg">
-              Contact the Team
-            </Link>
+      {/* 5. CONTACT SECTION (Integrated) */}
+      <section id="contact" className="py-24 bg-indigo-50/50 px-4 border-t border-indigo-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <div className="inline-flex items-center rounded-full border border-indigo-200 bg-white px-3 py-1 text-sm text-indigo-600 shadow-sm">
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Get in Touch
+            </div>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">
+              Ready to reshape <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">hiring?</span>
+            </h2>
+            <p className="text-lg text-slate-600">
+              Join the INSPIRE ecosystem. Whether you're a student seeking guidance or an industry leader hunting for verified talent—we're here to help.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-5 gap-12 items-start">
+            
+            {/* Contact Info */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                <h3 className="text-xl font-bold text-slate-900 mb-6">Contact Information</h3>
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-500">Email Us</p>
+                      <a href="mailto:hello@inspire-platform.com" className="text-lg font-semibold text-slate-900 hover:text-indigo-600 transition-colors">
+                        hello@inspire-platform.com
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
+                      <MapPin className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-500">Headquarters</p>
+                      <p className="text-lg font-semibold text-slate-900">
+                        Innovation Hub, Pune<br />
+                        Maharashtra, India
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Support Box */}
+              <div className="bg-indigo-900 p-8 rounded-3xl text-white shadow-lg">
+                <h4 className="text-lg font-bold mb-2">Need Technical Support?</h4>
+                <p className="text-indigo-200 mb-6 text-sm leading-relaxed">
+                  If you are facing issues with your Skill Passport verification or AI Assessment profiling, visit our Help Center.
+                </p>
+                <Link href="#" className="text-white font-semibold flex items-center hover:text-indigo-300 transition-colors">
+                  Visit Help Center &rarr;
+                </Link>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            <div className="lg:col-span-3">
+              <div className="bg-white p-8 md:p-10 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40">
+                {isSubmitted ? (
+                  <div className="py-16 text-center space-y-4 animate-in fade-in zoom-in duration-500">
+                    <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <CheckCircle2 className="w-10 h-10" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900">Message Sent!</h3>
+                    <p className="text-slate-600 max-w-md mx-auto">
+                      Thank you for reaching out. Our team will get back to you within 24-48 hours.
+                    </p>
+                    <button 
+                      onClick={() => setIsSubmitted(false)}
+                      className="mt-6 text-indigo-600 font-semibold hover:text-indigo-700"
+                    >
+                      Send another message
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="firstName" className="text-sm font-medium text-slate-900">First Name</label>
+                        <input 
+                          type="text" 
+                          id="firstName" 
+                          required
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/50 focus:border-indigo-600 transition-all"
+                          placeholder="Yash"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="lastName" className="text-sm font-medium text-slate-900">Last Name</label>
+                        <input 
+                          type="text" 
+                          id="lastName" 
+                          required
+                          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/50 focus:border-indigo-600 transition-all"
+                          placeholder="Hiwale"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="text-sm font-medium text-slate-900">Work or University Email</label>
+                      <input 
+                        type="email" 
+                        id="email" 
+                        required
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/50 focus:border-indigo-600 transition-all"
+                        placeholder="yash@university.edu"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="role" className="text-sm font-medium text-slate-900">I am a...</label>
+                      <select 
+                        id="role" 
+                        required
+                        defaultValue=""
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/50 focus:border-indigo-600 transition-all text-slate-700"
+                      >
+                        <option value="" disabled>Select your role in the ecosystem</option>
+                        <option value="student">Student / Job Seeker</option>
+                        <option value="industry">Industry Professional / Recruiter</option>
+                        <option value="institution">University / Institution Admin</option>
+                        <option value="faculty">Faculty Member / Educator</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="message" className="text-sm font-medium text-slate-900">How can we help you?</label>
+                      <textarea 
+                        id="message" 
+                        rows={4}
+                        required
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/50 focus:border-indigo-600 transition-all resize-none"
+                        placeholder="Tell us about your requirements or questions..."
+                      ></textarea>
+                    </div>
+
+                    <button 
+                      type="submit"
+                      className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-md shadow-indigo-100 group"
+                    >
+                      Send Message
+                      <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
+
     </div>
   );
 }
 
-// Sub-components for clean code
+// Sub-components
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
   return (
     <div className="p-8 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
