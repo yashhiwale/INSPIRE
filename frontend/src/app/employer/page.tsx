@@ -1,210 +1,224 @@
-// frontend/src/app/employer/page.tsx
+"use client";
 
-'use client';
-
-import React, { useState } from 'react';
-import { useAuth } from '@/components/auth/AuthContext';
-import {
-  Briefcase,
-  Search,
+import { useState } from "react";
+import { 
+  Search, 
+  Filter, 
+  ShieldCheck, 
+  BadgeCheck, 
+  MapPin, 
+  Briefcase, 
+  TrendingUp, 
   Users,
-  Target,
-  ShieldCheck,
-  CheckCircle2,
-  Star,
-  Building2,
-  ArrowRight
-} from 'lucide-react';
-import { Badge } from '@/components/ui/Badge';
+  Building2
+} from "lucide-react";
+import Link from "next/link";
 
-/* ─────────────────────────────────────────────────────────────
-   Mock Data for Employer / Industry Dashboard
-───────────────────────────────────────────────────────────── */
-const ACTIVE_JOBS = [
-  { id: 'job-1', title: 'Frontend Engineer (React/Next.js)', candidates: 24, highMatches: 5 },
-  { id: 'job-2', title: 'Data Scientist Intern', candidates: 45, highMatches: 12 },
-];
-
-const TALENT_POOL = [
+// Mock Data for Hackathon Prototype
+const CANDIDATES = [
   {
-    id: 'c-1',
-    name: 'Alex Learner',
-    university: 'Pune Institute of Technology',
-    matchScore: 95,
-    status: 'high-match',
-    skills: [
-      { name: 'React.js', tier: 5, label: 'Industry-Verified' },
-      { name: 'TypeScript', tier: 4, label: 'Faculty-Verified' },
-    ],
-    evidence: '3 Industry Projects, 50+ Commits',
-  },
-  {
-    id: 'c-2',
-    name: 'Priya Patel',
-    university: 'National College of Engineering',
-    matchScore: 88,
-    status: 'partial-match',
-    skills: [
-      { name: 'React.js', tier: 3, label: 'Project-Verified' },
-      { name: 'UI/UX Design', tier: 4, label: 'Faculty-Verified' },
-    ],
-    evidence: 'E-commerce Redesign Case Study',
-  },
-  {
-    id: 'c-3',
-    name: 'Rahul Sharma',
-    university: 'Global Tech University',
+    id: 1,
+    name: "Yash Hiwale",
+    role: "Full-Stack Developer",
+    location: "Pune, Maharashtra",
     matchScore: 92,
-    status: 'high-match',
+    employability: 88,
     skills: [
-      { name: 'Node.js', tier: 5, label: 'Industry-Verified' },
-      { name: 'MongoDB', tier: 4, label: 'Faculty-Verified' },
+      { name: "React.js", verified: true },
+      { name: "Node.js", verified: true },
+      { name: "AWS", verified: false }
     ],
-    evidence: 'Scalable API Architecture Repo',
+    status: "Actively Looking"
+  },
+  {
+    id: 2,
+    name: "Priya Sharma",
+    role: "Machine Learning Engineer",
+    location: "Bangalore, Karnataka",
+    matchScore: 85,
+    employability: 91,
+    skills: [
+      { name: "Python", verified: true },
+      { name: "TensorFlow", verified: true },
+      { name: "SQL", verified: true }
+    ],
+    status: "Open to Offers"
+  },
+  {
+    id: 3,
+    name: "Rahul Verma",
+    role: "Product Designer",
+    location: "Remote / Delhi",
+    matchScore: 78,
+    employability: 82,
+    skills: [
+      { name: "Figma", verified: true },
+      { name: "UI/UX", verified: false },
+      { name: "Prototyping", verified: true }
+    ],
+    status: "Interviewing"
   }
 ];
 
-export default function EmployerDashboardPage() {
-  const { user } = useAuth();
-  const [shortlisted, setShortlisted] = useState<string[]>([]);
+export default function EmployerDashboard() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("All Roles");
 
-  const handleShortlist = (id: string) => {
-    if (!shortlisted.includes(id)) {
-      setShortlisted([...shortlisted, id]);
-    }
-  };
-
-  const displayName = user?.name || 'Recruiter';
+  // Simple filter logic for the prototype
+  const filteredCandidates = CANDIDATES.filter(c => 
+    (roleFilter === "All Roles" || c.role.includes(roleFilter)) &&
+    (c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+     c.skills.some(s => s.name.toLowerCase().includes(searchQuery.toLowerCase())))
+  );
 
   return (
-    <div className="mx-auto max-w-6xl py-8">
-      
-      {/* ── Header ──────────────────────────────── */}
-      <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <div className="mb-3 flex items-center gap-2">
-            <Building2 className="h-8 w-8 text-indigo-600" />
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">Industry Partner Hub</h1>
-          </div>
-          <p className="text-lg text-slate-600">
-            Welcome, <span className="font-semibold text-indigo-600">{displayName}</span>. Source verified talent based on actual capabilities, not just keywords.
-          </p>
-        </div>
+    <div className="min-h-screen bg-slate-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-7xl mx-auto space-y-8">
         
-        <div className="flex gap-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">Active Posts</p>
-            <p className="mt-1 text-2xl font-bold text-slate-900">2</p>
-          </div>
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-600">Verified Matches</p>
-            <p className="mt-1 text-2xl font-bold text-emerald-700">17</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-8 lg:grid-cols-12">
-        
-        {/* ── Left Column: Active Jobs ──────────────────────────────── */}
-        <div className="lg:col-span-4 space-y-6">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="mb-6 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-slate-700" />
-                <h2 className="text-xl font-bold text-slate-900">Your Postings</h2>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {ACTIVE_JOBS.map((job) => (
-                <div key={job.id} className="cursor-pointer rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-colors hover:border-indigo-200 hover:bg-indigo-50">
-                  <h3 className="font-bold text-slate-900">{job.title}</h3>
-                  <div className="mt-3 flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1.5 text-slate-500">
-                      <Users className="h-4 w-4" /> {job.candidates} Applicants
-                    </span>
-                    <span className="flex items-center gap-1.5 font-semibold text-emerald-600">
-                      <Target className="h-4 w-4" /> {job.highMatches} Top Matches
-                    </span>
-                  </div>
-                </div>
-              ))}
-              
-              <button className="mt-2 w-full rounded-xl border-2 border-dashed border-slate-200 py-3 text-sm font-semibold text-slate-500 transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-600">
-                + Post New Opportunity
-              </button>
-            </div>
-          </div>
+        {/* Top Analytics Bar */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <StatCard icon={<Users />} label="Total Verified Talent" value="1,248" trend="+12% this week" />
+          <StatCard icon={<ShieldCheck />} label="Skills Verified" value="8,942" trend="Cryptographically secured" />
+          <StatCard icon={<Building2 />} label="Active Job Posts" value="12" trend="3 needing urgent fulfillment" />
         </div>
 
-        {/* ── Right Column: AI Talent Discovery ──────────────────────────────── */}
-        <div className="lg:col-span-8">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2">
-                <Search className="h-5 w-5 text-slate-700" />
-                <h2 className="text-xl font-bold text-slate-900">AI Talent Discovery</h2>
-              </div>
-              <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-600">
-                <ShieldCheck className="h-4 w-4 text-indigo-500" /> Filter: Tier 4+ Skills
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {TALENT_POOL.map((candidate) => {
-                const isShortlisted = shortlisted.includes(candidate.id);
-                
-                return (
-                  <div key={candidate.id} className="flex flex-col gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm ring-1 ring-slate-900/5 transition-all hover:shadow-md sm:flex-row sm:items-center sm:justify-between">
-                    
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-bold text-slate-900">{candidate.name}</h3>
-                        <Badge variant={candidate.status === 'high-match' ? 'success' : 'industry'} size="xs">
-                          {candidate.matchScore}% Match
-                        </Badge>
-                      </div>
-                      <p className="mt-1 text-sm text-slate-500">{candidate.university}</p>
-                      
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {candidate.skills.map((skill, idx) => (
-                          <div key={idx} className="flex items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
-                            {skill.tier === 5 ? <Star className="h-3.5 w-3.5 text-emerald-500" /> : <ShieldCheck className="h-3.5 w-3.5 text-indigo-500" />}
-                            {skill.name} (T{skill.tier})
-                          </div>
-                        ))}
-                      </div>
-                      <p className="mt-3 text-xs font-medium text-slate-500">
-                        <span className="font-semibold text-slate-700">Evidence:</span> {candidate.evidence}
-                      </p>
-                    </div>
-
-                    <div className="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
-                      {isShortlisted ? (
-                        <div className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-100 px-6 py-2.5 text-sm font-bold text-emerald-700">
-                          <CheckCircle2 className="h-4 w-4" /> Shortlisted
-                        </div>
-                      ) : (
-                        <button 
-                          onClick={() => handleShortlist(candidate.id)}
-                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-slate-800"
-                        >
-                          Shortlist Candidate <ArrowRight className="h-4 w-4" />
-                        </button>
-                      )}
-                      <button className="text-xs font-semibold text-indigo-600 hover:underline sm:text-right">
-                        View Full Passport
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+        {/* Header & Search/Filter Section */}
+        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row gap-6 items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+              <Briefcase className="w-6 h-6 text-indigo-600" />
+              Talent Discovery Engine
+            </h1>
+            <p className="text-slate-500 mt-1">NLP-powered matching based on verified competencies.</p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row w-full md:w-auto gap-4">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input 
+                type="text" 
+                placeholder="Search skills or names..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-600/50 outline-none text-sm transition-all"
+              />
             </div>
             
+            <div className="relative w-full sm:w-48">
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <select 
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-600/50 outline-none text-sm appearance-none cursor-pointer"
+              >
+                <option value="All Roles">All Roles</option>
+                <option value="Developer">Developers</option>
+                <option value="Engineer">Engineers</option>
+                <option value="Designer">Designers</option>
+              </select>
+            </div>
           </div>
         </div>
 
+        {/* Candidate Grid */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {filteredCandidates.map((candidate) => (
+            <CandidateCard key={candidate.id} candidate={candidate} />
+          ))}
+          
+          {filteredCandidates.length === 0 && (
+            <div className="lg:col-span-2 py-12 text-center text-slate-500">
+              No candidates found matching your criteria. Try adjusting your filters.
+            </div>
+          )}
+        </div>
+
       </div>
+    </div>
+  );
+}
+
+// Sub-components
+function StatCard({ icon, label, value, trend }: { icon: React.ReactNode, label: string, value: string, trend: string }) {
+  return (
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
+      <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
+        {icon}
+      </div>
+      <div>
+        <div className="text-sm font-medium text-slate-500 mb-1">{label}</div>
+        <div className="text-2xl font-bold text-slate-900">{value}</div>
+        <div className="text-xs text-emerald-600 font-medium mt-1">{trend}</div>
+      </div>
+    </div>
+  );
+}
+
+function CandidateCard({ candidate }: { candidate: any }) {
+  return (
+    <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+      
+      {/* Card Header */}
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-gradient-to-br from-indigo-100 to-blue-100 text-indigo-700 rounded-2xl flex items-center justify-center text-xl font-bold shadow-inner">
+            {candidate.name.charAt(0)}
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-1">
+              {candidate.name}
+              <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            </h3>
+            <p className="text-sm font-medium text-indigo-600">{candidate.role}</p>
+            <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
+              <MapPin className="w-3 h-3" /> {candidate.location}
+            </p>
+          </div>
+        </div>
+        
+        {/* Match Badge */}
+        <div className="flex flex-col items-end">
+          <div className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-bold border border-emerald-100">
+            <TrendingUp className="w-4 h-4" />
+            {candidate.matchScore}% Match
+          </div>
+          <span className="text-[10px] font-medium text-slate-400 mt-1 uppercase tracking-wider">For your open role</span>
+        </div>
+      </div>
+
+      {/* Skills Section */}
+      <div className="mb-8 flex-grow">
+        <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Top Assessed Skills</div>
+        <div className="flex flex-wrap gap-2">
+          {candidate.skills.map((skill: any, idx: number) => (
+            <span 
+              key={idx} 
+              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium border ${
+                skill.verified 
+                  ? "bg-emerald-50/50 border-emerald-100 text-emerald-700" 
+                  : "bg-slate-50 border-slate-200 text-slate-600"
+              }`}
+            >
+              {skill.verified && <BadgeCheck className="w-4 h-4 text-emerald-500" />}
+              {skill.name}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Action Footer */}
+      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+        <div className="text-sm font-medium text-slate-500">
+          Status: <span className="text-slate-900">{candidate.status}</span>
+        </div>
+        <Link 
+          href="/profile" 
+          className="px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl hover:bg-indigo-600 transition-colors shadow-sm"
+        >
+          View Passport
+        </Link>
+      </div>
+
     </div>
   );
 }
