@@ -1,9 +1,8 @@
 "use client";
 
-import { BadgeCheck, Clock, User, ShieldCheck, Award, Briefcase, GraduationCap, Link as LinkIcon } from "lucide-react";
+import { BadgeCheck, Clock, User, ShieldCheck, Briefcase, GraduationCap, Link as LinkIcon, Award } from "lucide-react";
 import Link from "next/link";
 
-// Mock Data for the Hackathon Demo
 const STUDENT_PROFILE = {
   name: "Yash Hiwale",
   domain: "Full-Stack & AI Development",
@@ -22,13 +21,13 @@ const SKILLS_DATA = [
 
 export default function SkillPassport() {
   return (
-    <div className="min-h-screen bg-slate-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-slate-50 pt-16 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-5xl mx-auto space-y-8">
         
-        {/* Profile Header Card */}
-        <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        {/* Profile Card Exact Match to Image */}
+        <div className="bg-white rounded-[2rem] p-8 border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-6">
-            <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl shadow-lg flex items-center justify-center text-white text-3xl font-bold">
+            <div className="w-24 h-24 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-4xl font-bold">
               {STUDENT_PROFILE.name.charAt(0)}
             </div>
             <div>
@@ -37,20 +36,21 @@ export default function SkillPassport() {
                 <ShieldCheck className="w-6 h-6 text-emerald-500" />
               </div>
               <p className="text-lg text-indigo-600 font-medium mb-2">{STUDENT_PROFILE.domain}</p>
-              <div className="flex items-center gap-4 text-sm text-slate-500">
-                <span className="flex items-center gap-1"><GraduationCap className="w-4 h-4" /> {STUDENT_PROFILE.university}</span>
+              <div className="flex items-center gap-2 text-sm text-slate-500">
+                <GraduationCap className="w-4 h-4" />
+                <span>{STUDENT_PROFILE.university}</span>
               </div>
             </div>
           </div>
           
-          <div className="bg-indigo-50 p-4 rounded-2xl border border-indigo-100 text-center min-w-[150px]">
+          <div className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-50 text-center min-w-[180px]">
             <div className="text-sm font-semibold text-indigo-600 mb-1">Employability Score</div>
-            <div className="text-4xl font-extrabold text-slate-900">{STUDENT_PROFILE.matchScore}<span className="text-lg text-slate-500">/100</span></div>
+            <div className="text-4xl font-bold text-slate-900">{STUDENT_PROFILE.matchScore}<span className="text-lg text-slate-500 font-medium">/100</span></div>
           </div>
         </div>
 
-        {/* Skill Passport Section */}
-        <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+        {/* Skill Passport Exact Match to Image */}
+        <div className="bg-white rounded-[2rem] p-8 border border-slate-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
             <div>
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -61,15 +61,15 @@ export default function SkillPassport() {
             </div>
             <Link 
               href="/skills"
-              className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-sm"
+              className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 transition-colors flex items-center gap-2"
             >
-              <Briefcase className="w-4 h-4" />
+              <Briefcase className="w-5 h-5" />
               Find Opportunities
             </Link>
           </div>
 
-          {/* Legend */}
-          <div className="flex flex-wrap gap-4 mb-6 p-4 bg-slate-50 rounded-xl border border-slate-100 text-sm font-medium">
+          {/* Legend row styled as per the image */}
+          <div className="flex flex-wrap items-center gap-6 mb-8 p-4 bg-slate-50 rounded-xl font-medium text-sm">
             <span className="flex items-center gap-2 text-emerald-700"><BadgeCheck className="w-4 h-4 text-emerald-500"/> Verified</span>
             <span className="flex items-center gap-2 text-amber-700"><Clock className="w-4 h-4 text-amber-500"/> Pending Verification</span>
             <span className="flex items-center gap-2 text-slate-600"><User className="w-4 h-4 text-slate-400"/> Self-Declared</span>
@@ -88,13 +88,12 @@ export default function SkillPassport() {
   );
 }
 
-// Sub-component for individual skill rendering
 function SkillCard({ skill }: { skill: any }) {
   const isVerified = skill.status === "verified";
   const isPending = skill.status === "pending";
   
   return (
-    <div className={`p-5 rounded-2xl border transition-all hover:shadow-md ${
+    <div className={`p-5 rounded-2xl border transition-all hover:shadow-sm ${
       isVerified ? "bg-emerald-50/30 border-emerald-100" :
       isPending ? "bg-amber-50/30 border-amber-100" :
       "bg-slate-50/50 border-slate-100"

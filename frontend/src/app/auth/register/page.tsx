@@ -1,245 +1,92 @@
-// frontend/src/app/auth/register/page.tsx
-'use client';
+"use client";
 
-import { useState, useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { UserPlus, AlertCircle, GraduationCap, BookOpen, Building2, Briefcase, ArrowRight } from 'lucide-react';
-import { useAuth } from '@/components/auth/AuthContext';
-import type { UserRole } from '@/types/roles';
+import { useState } from "react";
+import { GraduationCap, Building2, Users, LineChart, BrainCircuit, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const ROLE_META: Record<UserRole, { title: string; subtitle: string; description: string; icon: any; color: string; extraFieldLabel: string; extraPlaceholder: string }> = {
-  student: {
-    title: 'Student Portal',
-    subtitle: 'Build your Verified Skill Passport',
-    description: 'Assess skills, bridge career gaps, and get matched with top opportunities.',
-    icon: <GraduationCap className="h-6 w-6 text-indigo-600" />,
-    color: 'border-indigo-200 hover:border-indigo-500 bg-indigo-50/30',
-    extraFieldLabel: 'Degree & Major (e.g. B.Tech Computer Science)',
-    extraPlaceholder: 'e.g. B.Sc IT / B.Tech CSE',
-  },
-  faculty: {
-    title: 'Faculty / Academician Portal',
-    subtitle: 'Verify Student Evidence & Mentor',
-    description: 'Map curriculum outcomes, monitor progress, and validate student project work.',
-    icon: <BookOpen className="h-6 w-6 text-emerald-600" />,
-    color: 'border-emerald-200 hover:border-emerald-500 bg-emerald-50/30',
-    extraFieldLabel: 'Department Name',
-    extraPlaceholder: 'e.g. Department of Computer Science',
-  },
-  institution: {
-    title: 'Institution Portal',
-    subtitle: 'Institutional Analytics & Readiness',
-    description: 'Track cohort-level skill gaps, placement trends, and program outcomes.',
-    icon: <Building2 className="h-6 w-6 text-amber-600" />,
-    color: 'border-amber-200 hover:border-amber-500 bg-amber-50/30',
-    extraFieldLabel: 'University / Institution Name',
-    extraPlaceholder: 'e.g. Pune Institute of Technology',
-  },
-  industry: {
-    title: 'Industry / Recruiter Portal',
-    subtitle: 'Source Verified Talent',
-    description: 'Post live projects, hire verified candidates, and close the academia feedback loop.',
-    icon: <Briefcase className="h-6 w-6 text-sky-600" />,
-    color: 'border-sky-200 hover:border-sky-500 bg-sky-50/30',
-    extraFieldLabel: 'Company / Organization Name',
-    extraPlaceholder: 'e.g. TechNova Solutions',
-  },
-};
-
-function RegisterForm() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [extraDetail, setExtraDetail] = useState('');
-  const [role, setRole] = useState<UserRole | null>(null);
-  const [error, setError] = useState('');
-  
-  const { register } = useAuth();
+export default function RegisterPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const roleParam = searchParams.get('role');
-    if (roleParam && ['student', 'faculty', 'institution', 'industry'].includes(roleParam)) {
-      setRole(roleParam as UserRole);
-    }
-  }, [searchParams]);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    if (!role) {
-      setError('Please select a role first');
-      return;
-    }
-    if (!name.trim() || !email.trim() || !extraDetail.trim()) {
-      setError('All fields are required');
-    }
-    
-    register({ name, email, role: role as any });
-    
-    if (role === 'industry') {
-      router.push('/employer');
-    } else if (role === 'faculty' || role === 'institution') {
-      router.push('/dashboard');
-    } else {
-      router.push('/student');
-    }
+    if (selectedRole === "student") router.push("/student");
+    else if (selectedRole === "employer") router.push("/employer");
+    else router.push("/");
   };
 
-  // If no role is selected yet, show the magnificent 4-Role Selector Cards page!
-  if (!role) {
-    return (
-      <div className="mx-auto max-w-4xl px-4 py-12">
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-            Choose Your INSPIRE Portal
-          </h1>
-          <p className="mt-3 text-base text-slate-600">
-            Select your stakeholder category to begin your registration journey.
-          </p>
+  return (
+    <div className="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center p-4">
+      
+      <div className="max-w-5xl w-full animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out">
+        
+        <div className="text-center mb-10">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-3">Create your account</h1>
+          <p className="text-slate-500 text-lg font-medium">Join the skill-first ecosystem. Select your role to get started.</p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
-          {(Object.keys(ROLE_META) as UserRole[]).map((r) => {
-            const meta = ROLE_META[r];
-            return (
-              <div
-                key={r}
-                onClick={() => setRole(r)}
-                className={`group relative flex cursor-pointer flex-col justify-between rounded-3xl border-2 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${meta.color}`}
-              >
-                <div>
-                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm">
-                    {meta.icon}
-                  </div>
-                  <h2 className="text-xl font-bold text-slate-900">{meta.title}</h2>
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-indigo-600">
-                    {meta.subtitle}
-                  </p>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                    {meta.description}
-                  </p>
-                </div>
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
+          
+          {/* Left Side: Role Selection */}
+          <div className="bg-white/60 backdrop-blur-xl p-8 md:p-10 rounded-[2rem] border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <h2 className="text-xl font-bold mb-6 text-slate-900 tracking-tight">1. Select your Role</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <RoleCard id="student" icon={<GraduationCap />} title="Student" selected={selectedRole === "student"} onClick={() => setSelectedRole("student")} />
+              <RoleCard id="employer" icon={<Building2 />} title="Employer" selected={selectedRole === "employer"} onClick={() => setSelectedRole("employer")} />
+              <RoleCard id="faculty" icon={<Users />} title="Faculty" selected={selectedRole === "faculty"} onClick={() => setSelectedRole("faculty")} />
+              <RoleCard id="institution" icon={<LineChart />} title="Institution" selected={selectedRole === "institution"} onClick={() => setSelectedRole("institution")} />
+            </div>
+          </div>
 
-                <div className="mt-6 flex items-center gap-1.5 text-sm font-bold text-slate-900 group-hover:text-indigo-600">
-                  Register as {r.charAt(0).toUpperCase() + r.slice(1)} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          {/* Right Side: Registration Form */}
+          <div className="bg-white p-8 md:p-10 rounded-[2rem] border border-slate-200/60 shadow-xl shadow-slate-200/50 flex flex-col justify-center transition-all duration-300">
+            <h2 className="text-xl font-bold mb-6 text-slate-900 tracking-tight">
+              {selectedRole ? `2. Register as ${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}` : "2. Account details"}
+            </h2>
+            
+            <form onSubmit={handleRegister} className="space-y-5">
+              <div className="grid grid-cols-2 gap-5">
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-bold text-slate-700">First Name</label>
+                  <input type="text" required disabled={!selectedRole} className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 transition-all font-medium disabled:opacity-50" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-bold text-slate-700">Last Name</label>
+                  <input type="text" required disabled={!selectedRole} className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 transition-all font-medium disabled:opacity-50" />
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-12 text-center text-sm text-slate-500">
-          Already have an account?{' '}
-          <Link href="/auth/login" className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
-            Sign in here
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  // Once a role is clicked, render the targeted Registration Form
-  const currentMeta = ROLE_META[role];
-
-  return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-4">
-      <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5">
-        <div className="mb-6 flex items-center justify-between">
-          <button 
-            type="button" 
-            onClick={() => setRole(null)} 
-            className="text-xs font-semibold text-indigo-600 hover:underline"
-          >
-            ← Back to Role Selection
-          </button>
-          <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-600">
-            {role.toUpperCase()}
-          </span>
-        </div>
-
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-slate-900">{currentMeta.title}</h1>
-          <p className="mt-1 text-sm text-slate-500">{currentMeta.subtitle}</p>
-        </div>
-
-        <form onSubmit={handleRegister} className="space-y-5">
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <div>
-              <label htmlFor="name" className="mb-1.5 block text-sm font-semibold text-slate-700">
-                Full Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                placeholder="Your Name"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="mb-1.5 block text-sm font-semibold text-slate-700">
-                Email Address
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                placeholder="you@example.com"
-              />
+              <div className="space-y-1.5">
+                <label className="block text-sm font-bold text-slate-700">Email Address</label>
+                <input type="email" required disabled={!selectedRole} placeholder={selectedRole === 'employer' ? 'hr@company.com' : 'student@university.edu'} className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 transition-all font-medium disabled:opacity-50" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="block text-sm font-bold text-slate-700">Password</label>
+                <input type="password" required disabled={!selectedRole} placeholder="••••••••" className="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600/20 focus:border-indigo-600 transition-all font-medium disabled:opacity-50" />
+              </div>
+              
+              <button type="submit" disabled={!selectedRole} className="w-full mt-4 flex items-center justify-center gap-2 px-6 py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-indigo-600 transition-all duration-300 shadow-lg hover:shadow-indigo-500/25 disabled:opacity-50 disabled:cursor-not-allowed group">
+                Create Account
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </button>
+            </form>
+            
+            <div className="mt-8 text-center text-sm font-medium text-slate-500">
+              Already have an account? <Link href="/auth/login" className="text-indigo-600 font-bold hover:underline">Log in here</Link>
             </div>
           </div>
 
-          <div>
-            <label htmlFor="extra" className="mb-1.5 block text-sm font-semibold text-slate-700">
-              {currentMeta.extraFieldLabel}
-            </label>
-            <input
-              type="text"
-              id="extra"
-              value={extraDetail}
-              onChange={(e) => setExtraDetail(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-              placeholder={currentMeta.extraPlaceholder}
-            />
-          </div>
-
-          {error && (
-            <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-600">
-              <AlertCircle className="h-4 w-4 shrink-0" />
-              <p>{error}</p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition-all hover:shadow-lg hover:shadow-indigo-500/30 active:scale-[0.98]"
-          >
-            <UserPlus className="h-4 w-4" />
-            Complete Registration
-          </button>
-        </form>
-
-        <div className="mt-8 text-center text-sm text-slate-500">
-          Already have an account?{' '}
-          <Link href="/auth/login" className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
-            Sign in
-          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default function RegisterPage() {
+function RoleCard({ icon, title, selected, onClick }: any) {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-slate-500">Loading registration hub...</div>}>
-      <RegisterForm />
-    </Suspense>
+    <div onClick={onClick} className={`cursor-pointer p-5 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center text-center gap-3 ${selected ? "border-indigo-600 bg-indigo-50/50 shadow-md scale-105" : "border-transparent bg-white shadow-sm hover:border-indigo-200 hover:shadow-md"}`}>
+      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${selected ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/30" : "bg-slate-50 text-slate-400"}`}>{icon}</div>
+      <span className={`font-bold text-sm ${selected ? "text-indigo-900" : "text-slate-600"}`}>{title}</span>
+    </div>
   );
 }
