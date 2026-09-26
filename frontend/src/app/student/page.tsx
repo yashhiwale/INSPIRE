@@ -1,250 +1,207 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import {
-  AlertTriangle,
-  ArrowUpRight,
-  Brain,
-  Briefcase,
-  ClipboardCheck,
-  FolderGit2,
-  Map,
-  RefreshCw,
-  Route,
-  ShieldCheck,
-} from 'lucide-react';
+import { 
+  BrainCircuit, 
+  Target, 
+  ShieldCheck, 
+  Briefcase, 
+  TrendingUp, 
+  Clock, 
+  ChevronRight,
+  Award
+} from "lucide-react";
+import Link from "next/link";
 
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { StateView } from '@/components/ui/StateView';
-import type { UIState } from '@/types/common';
-import { ROLE_LABELS } from '@/types/roles';
-
-const IS_DEV = process.env.NODE_ENV !== 'production';
-const RESOLVE_DELAY_MS = 600;
-const FOCUS_RING =
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2';
-
-/** Local placeholder loader: loading → empty after a short delay (no backend yet). */
-function usePanelState() {
-  const [state, setState] = useState<UIState>('loading');
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const clear = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-  };
-
-  const load = useCallback(() => {
-    clear();
-    setState('loading');
-    // TODO(api): replace with api.get(...) from lib/api.ts
-    timerRef.current = setTimeout(() => setState('empty'), RESOLVE_DELAY_MS);
-  }, []);
-
-  const simulateError = useCallback(() => {
-    clear();
-    setState('error');
-  }, []);
-
-  useEffect(() => {
-    load();
-    return clear;
-  }, [load]);
-
-  return { state, retry: load, simulateError };
-}
-
-const MODULES = [
-  {
-    id: 'profiling',
-    step: '01',
-    title: 'Career Profiling & Profile',
-    description: 'Answer 20 questions to anchor your profile, interests, and target roles.',
-    href: '/assessment',
-    icon: Brain,
-  },
-  {
-    id: 'assessments',
-    step: '02',
-    title: 'Skill Assessments',
-    description: 'Validate technical and soft skills to move entries to the Assessed tier.',
-    href: '/assessment',
-    icon: ClipboardCheck,
-  },
-  {
-    id: 'career',
-    step: '03',
-    title: 'Gap Analysis & Roadmap',
-    description: 'See what a target role expects and follow milestones that close each gap.',
-    href: '/career',
-    icon: Map,
-  },
-  {
-    id: 'evidence',
-    step: '04',
-    title: 'Project & Evidence Hub',
-    description: 'Link GitHub repositories, live demos, and certificates to your skills.',
-    href: '/profile',
-    icon: FolderGit2,
-  },
-  {
-    id: 'passport',
-    step: '05',
-    title: 'Verified Skill Passport',
-    description: 'Your portable record of skills, from Self-Declared to Industry-Verified.',
-    href: '/skills',
-    icon: ShieldCheck,
-  },
-  {
-    id: 'opportunities',
-    step: '06',
-    title: 'Opportunities & Feedback',
-    description: 'Apply with your passport and receive direct, skill-level industry feedback.',
-    href: '/opportunities',
-    icon: Briefcase,
-  },
-] as const;
-
-export default function StudentPage() {
-  const journey = usePanelState();
-
+export default function StudentDashboard() {
   return (
-    <div className="space-y-10">
-      {/* Page header */}
-      <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-widest text-indigo-600">
-            Student
-          </p>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-            Student Workspace
-          </h1>
-          <p className="max-w-2xl text-slate-600">
-            Your home for the INSPIRE journey — profile, assess, close gaps, gather evidence,
-            and carry a Verified Skill Passport into industry.
-          </p>
+    <div className="min-h-screen bg-slate-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Welcome Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Welcome back, Yash</h1>
+            <p className="text-slate-500 mt-1">Here is the latest snapshot of your employability and skill journey.</p>
+          </div>
+          <Link 
+            href="/assessment" 
+            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            <BrainCircuit className="w-4 h-4" />
+            Retake AI Profiling
+          </Link>
         </div>
-        <Badge variant="student" size="md" dot>
-          {ROLE_LABELS.student}
-        </Badge>
-      </header>
 
-      {/* Journey panel */}
-      <Card padding="lg" bordered>
-        <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 rounded-xl bg-indigo-50 p-2 text-indigo-600">
-              <Route className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <div>
-              <h2 className="text-lg font-semibold text-slate-900">Your journey</h2>
-              <p className="text-sm text-slate-500">
-                Current stage, next milestone, and pending verifications.
-              </p>
+        {/* Top Analytics Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <DashboardCard 
+            title="Employability Score" 
+            value="92/100" 
+            subtitle="Top 8% in your university"
+            icon={<TrendingUp className="w-6 h-6 text-indigo-600" />}
+            color="indigo"
+          />
+          <DashboardCard 
+            title="Verified Skills" 
+            value="6 Active" 
+            subtitle="2 pending verification"
+            icon={<ShieldCheck className="w-6 h-6 text-emerald-600" />}
+            color="emerald"
+          />
+          <DashboardCard 
+            title="Industry Matches" 
+            value="3 Roles" 
+            subtitle="Based on your current gaps"
+            icon={<Briefcase className="w-6 h-6 text-blue-600" />}
+            color="blue"
+          />
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          
+          {/* Main Activity Column */}
+          <div className="lg:col-span-2 space-y-8">
+            
+            {/* Quick Navigation Cards */}
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Link href="/profile" className="p-6 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all group flex flex-col items-start">
+                <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Award className="w-6 h-6" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-lg">Skill Passport</h3>
+                <p className="text-sm text-slate-500 mt-1 mb-4">View your cryptographically verified competencies.</p>
+                <div className="mt-auto flex items-center text-sm font-semibold text-indigo-600">
+                  Open Passport <ChevronRight className="w-4 h-4 ml-1" />
+                </div>
+              </Link>
+
+              <Link href="/skills" className="p-6 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all group flex flex-col items-start">
+                <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Target className="w-6 h-6" />
+                </div>
+                <h3 className="font-bold text-slate-900 text-lg">Gap Analysis</h3>
+                <p className="text-sm text-slate-500 mt-1 mb-4">Compare your skills against industry requirements.</p>
+                <div className="mt-auto flex items-center text-sm font-semibold text-indigo-600">
+                  View Gap Engine <ChevronRight className="w-4 h-4 ml-1" />
+                </div>
+              </Link>
+            </div>
+
+            {/* Recent Activity / Verification Status */}
+            <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm">
+              <h2 className="text-xl font-bold text-slate-900 mb-6">Recent Verification Activity</h2>
+              <div className="space-y-6">
+                <ActivityRow 
+                  title="Node.js Backend Assessment" 
+                  status="Pending Review" 
+                  time="2 days ago" 
+                  type="pending" 
+                />
+                <ActivityRow 
+                  title="Meta Front-End Certificate" 
+                  status="Verified Successfully" 
+                  time="1 week ago" 
+                  type="verified" 
+                />
+                <ActivityRow 
+                  title="Cloud Deployment (AWS)" 
+                  status="Proof Submitted" 
+                  time="1 week ago" 
+                  type="pending" 
+                />
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {IS_DEV && (
-              <Button
-                variant="ghost"
-                size="xs"
-                leftIcon={<AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />}
-                onClick={journey.simulateError}
-                ariaLabel="Simulate error state for journey"
-              >
-                Simulate error
-              </Button>
-            )}
-            <Button
-              variant="secondary"
-              size="sm"
-              leftIcon={<RefreshCw className="h-4 w-4" aria-hidden="true" />}
-              onClick={journey.retry}
-              ariaLabel="Retry loading journey"
-            >
-              Retry
-            </Button>
+
+          {/* Right Sidebar: Recommended Opportunities */}
+          <div className="space-y-8">
+            <div className="bg-indigo-900 rounded-3xl p-6 md:p-8 text-white shadow-lg">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+                <Briefcase className="w-6 h-6 text-indigo-300" />
+                Top Industry Matches
+              </h2>
+              
+              <div className="space-y-4">
+                <JobMatchCard 
+                  company="TechCorp Solutions" 
+                  role="Junior Full-Stack Dev" 
+                  match="92%" 
+                />
+                <JobMatchCard 
+                  company="Innovate AI" 
+                  role="Machine Learning Intern" 
+                  match="85%" 
+                />
+                <JobMatchCard 
+                  company="Global Systems" 
+                  role="Backend Engineer" 
+                  match="78%" 
+                />
+              </div>
+
+              <button className="w-full mt-6 py-3 bg-white/10 hover:bg-white/20 transition-colors rounded-xl text-sm font-semibold border border-white/20">
+                View All Opportunities
+              </button>
+            </div>
           </div>
+          
         </div>
+      </div>
+    </div>
+  );
+}
 
-        <StateView
-          state={journey.state}
-          title={
-            journey.state === 'error'
-              ? 'Journey unavailable'
-              : journey.state === 'loading'
-                ? 'Loading your journey'
-                : 'Your journey hasn’t started yet'
-          }
-          description={
-            journey.state === 'error'
-              ? 'We could not load your progress. Retry to try again.'
-              : journey.state === 'loading'
-                ? 'Fetching your current stage and pending verifications.'
-                : 'Begin with the 20-Question Career Profiling — every later module builds on it.'
-          }
-          action={{ label: 'Retry', onClick: journey.retry }}
-        />
-      </Card>
+// Sub-components
+function DashboardCard({ title, value, subtitle, icon, color }: any) {
+  const bgColors = {
+    indigo: "bg-indigo-50",
+    emerald: "bg-emerald-50",
+    blue: "bg-blue-50"
+  };
+  
+  return (
+    <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex items-start gap-4">
+      <div className={`w-14 h-14 ${bgColors[color as keyof typeof bgColors]} rounded-2xl flex items-center justify-center shrink-0`}>
+        {icon}
+      </div>
+      <div>
+        <div className="text-sm font-medium text-slate-500 mb-1">{title}</div>
+        <div className="text-2xl font-bold text-slate-900">{value}</div>
+        <div className="text-xs font-medium text-slate-400 mt-1">{subtitle}</div>
+      </div>
+    </div>
+  );
+}
 
-      {/* Module grid */}
-      <section aria-labelledby="modules-heading" className="space-y-6">
-        <div className="space-y-1">
-          <p className="text-xs font-semibold uppercase tracking-widest text-indigo-600">
-            Workspace
-          </p>
-          <h2 id="modules-heading" className="text-2xl font-bold tracking-tight text-slate-900">
-            Six modules, one verified journey
-          </h2>
+function ActivityRow({ title, status, time, type }: any) {
+  return (
+    <div className="flex items-center justify-between pb-4 border-b border-slate-100 last:border-0 last:pb-0">
+      <div className="flex items-center gap-4">
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+          type === 'verified' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'
+        }`}>
+          {type === 'verified' ? <ShieldCheck className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
         </div>
-
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {MODULES.map((module) => {
-            const Icon = module.icon;
-            return (
-              <Link
-                key={module.id}
-                href={module.href}
-                className={`group block rounded-2xl ${FOCUS_RING}`}
-              >
-                <Card padding="lg" bordered hoverable>
-                  <div className="flex h-full flex-col">
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
-                        <Icon className="h-5 w-5" aria-hidden="true" />
-                      </span>
-                      <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">
-                        Module {module.step}
-                      </span>
-                    </div>
-                    <h3 className="text-base font-semibold text-slate-900">{module.title}</h3>
-                    <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
-                      {module.description}
-                    </p>
-                    <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
-                      <span className="text-slate-500">
-                        Status: <span className="font-semibold text-slate-900">—</span>
-                      </span>
-                      <span className="inline-flex items-center gap-1 font-semibold text-indigo-600">
-                        Open
-                        <ArrowUpRight
-                          className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                          aria-hidden="true"
-                        />
-                      </span>
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-            );
-          })}
+        <div>
+          <p className="font-semibold text-slate-900 text-sm">{title}</p>
+          <p className={`text-xs font-medium mt-0.5 ${
+            type === 'verified' ? 'text-emerald-600' : 'text-amber-600'
+          }`}>{status}</p>
         </div>
-      </section>
+      </div>
+      <span className="text-xs font-medium text-slate-400">{time}</span>
+    </div>
+  );
+}
+
+function JobMatchCard({ company, role, match }: any) {
+  return (
+    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
+      <div className="flex justify-between items-start mb-2">
+        <h3 className="font-bold text-indigo-100 text-sm">{role}</h3>
+        <span className="text-xs font-bold bg-emerald-500 text-white px-2 py-0.5 rounded-md">{match}</span>
+      </div>
+      <p className="text-xs text-indigo-300">{company}</p>
     </div>
   );
 }
