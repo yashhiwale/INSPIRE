@@ -46,7 +46,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5">
         <div className="mb-8 text-center">
           <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
-          <p className="mt-2 text-sm text-slate-500">Sign in to your SkillBridge account</p>
+          <p className="mt-2 text-sm text-slate-500">Sign in to your INSPIRE account</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
@@ -81,7 +81,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-8 text-center text-sm text-slate-500">
-          New to SkillBridge?{' '}
+          New to INSPIRE?{' '}
           <Link href="/auth/register" className="font-semibold text-indigo-600 hover:text-indigo-700 hover:underline">
             Create an account
           </Link>

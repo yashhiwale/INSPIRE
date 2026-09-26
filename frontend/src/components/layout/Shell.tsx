@@ -25,14 +25,14 @@ export const Shell: React.FC<ShellProps> = ({
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <Image 
-              src="/brand/skillbridge-logo.jpg" 
+              src="/brand/INSPIRE-logo.jpg" 
               alt="" 
               width={20} 
               height={20} 
               className="rounded-full shadow-sm"
             />
             <p>
-              © {new Date().getFullYear()} SkillBridge — AI-powered Academia-Industry
+              © {new Date().getFullYear()} INSPIRE — AI-powered Academia-Industry
               Skill Intelligence Platform
             </p>
           </div>

@@ -93,7 +93,7 @@ function RegisterForm() {
       <div className="mx-auto max-w-4xl px-4 py-12">
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-            Choose Your SkillBridge Portal
+            Choose Your INSPIRE Portal
           </h1>
           <p className="mt-3 text-base text-slate-600">
             Select your stakeholder category to begin your registration journey.

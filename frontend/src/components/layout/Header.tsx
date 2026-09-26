@@ -34,7 +34,7 @@ import { ROLE_LABELS } from '@/types/roles';
 const LOGIN_HREF = '/auth/login';
 const REGISTER_HREF = '/auth/register'; // Now acts as the multi-role selection registration page
 
-const BRAND_LOGO_SRC = '/brand/skillbridge-logo.jpg';
+const BRAND_LOGO_SRC = '/brand/INSPIRE-logo.jpg';
 
 const FOCUS_RING =
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2';
@@ -46,7 +46,7 @@ function Brand({ compactTagline = false }: { compactTagline?: boolean }) {
   return (
     <Link
       href="/"
-      aria-label="SkillBridge home"
+      aria-label="INSPIRE home"
       className={`group flex items-center gap-2.5 rounded-xl ${FOCUS_RING}`}
     >
       <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white shadow-md shadow-indigo-500/25 transition-transform duration-300 group-hover:rotate-3 group-hover:scale-105">
@@ -61,7 +61,7 @@ function Brand({ compactTagline = false }: { compactTagline?: boolean }) {
       </span>
       <span className="flex flex-col leading-tight">
         <span className="text-base font-bold tracking-tight text-slate-900">
-          SkillBridge
+          INSPIRE
         </span>
         <span
           className={[

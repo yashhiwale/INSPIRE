@@ -30,7 +30,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Home',
     href: '/',
     icon: <Home className="h-4 w-4" aria-hidden="true" />,
-    description: 'SkillBridge overview',
+    description: 'INSPIRE overview',
     roles: ['student', 'faculty', 'institution', 'industry'],
   },
   // ── Faculty & Institution ──
@@ -103,7 +103,7 @@ export const NAV_GROUPS: ReadonlyArray<{ title: string; hrefs: string[] }> = [
 export const LANDING_NAV_ITEMS: NavItem[] = [
   { label: 'Features', href: '/#features', description: 'Platform modules' },
   { label: 'How It Works', href: '/#how-it-works', description: 'The four-step flow' },
-  { label: 'Stakeholders', href: '/#stakeholders', description: 'Who SkillBridge serves' },
+  { label: 'Stakeholders', href: '/#stakeholders', description: 'Who INSPIRE serves' },
   { label: 'Skill Passport', href: '/#verification', description: 'Verification tiers' },
   { label: 'Contact Us', href: '/#contact', description: 'Get in touch' },
 ];

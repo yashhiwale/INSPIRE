@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
 app = FastAPI(
-    title="SkillBridge Backend",
-    description="Backend API for SkillBridge",
+    title="INSPIRE Backend",
+    description="Backend API for INSPIRE",
     version="0.1.0",
 )
 
@@ -10,7 +10,7 @@ app = FastAPI(
 @app.get("/")
 def root():
     return {
-        "name": "SkillBridge",
+        "name": "INSPIRE",
         "status": "running",
         "version": "0.1.0",
     }

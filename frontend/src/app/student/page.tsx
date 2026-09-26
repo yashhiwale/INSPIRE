@@ -125,7 +125,7 @@ export default function StudentPage() {
             Student Workspace
           </h1>
           <p className="max-w-2xl text-slate-600">
-            Your home for the SkillBridge journey — profile, assess, close gaps, gather evidence,
+            Your home for the INSPIRE journey — profile, assess, close gaps, gather evidence,
             and carry a Verified Skill Passport into industry.
           </p>
         </div>

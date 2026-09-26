@@ -1,5 +1,5 @@
 """
-Configuration management for SkillBridge backend.
+Configuration management for INSPIRE backend.
 Loads settings from environment variables using Pydantic settings.
 """
 
@@ -12,11 +12,11 @@ class Settings(BaseSettings):
 
     # App Configuration
     app_env: str = "development"
-    app_name: str = "SkillBridge Backend"
+    app_name: str = "INSPIRE Backend"
     app_version: str = "0.1.0"
 
     # Database Configuration
-    database_url: str = "postgresql://username:password@localhost:5432/skillbridge"
+    database_url: str = "postgresql://username:password@localhost:5432/INSPIRE"
 
     # API Configuration
     api_prefix: str = "/api/v1"

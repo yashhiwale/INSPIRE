@@ -6,8 +6,8 @@ export interface User {
   role: 'student' | 'employer' | 'university';
 }
 
-const USERS_KEY = 'skillbridge_users';
-const SESSION_KEY = 'skillbridge_session';
+const USERS_KEY = 'INSPIRE_users';
+const SESSION_KEY = 'INSPIRE_session';
 
 export const authStorage = {
   getUsers: (): User[] => {

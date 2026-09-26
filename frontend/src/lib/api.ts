@@ -1,5 +1,5 @@
 /**
- * SkillBridge — Central API Client
+ * INSPIRE — Central API Client
  *
  * Thin fetch wrapper that:
  *  - Reads the backend base URL from NEXT_PUBLIC_API_URL

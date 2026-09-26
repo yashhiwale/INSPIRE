@@ -70,7 +70,7 @@ const PASSPORT_SKILLS = [
         name: 'Docker',
         icon: <Terminal className="h-5 w-5" />,
         tier: 2,
-        evidence: 'Passed Level 2 SkillBridge Assessment',
+        evidence: 'Passed Level 2 INSPIRE Assessment',
         endorsedBy: 'Platform Assessment',
       },
     ],
@@ -101,7 +101,7 @@ export default function SkillPassportPage() {
   
   // Default to a generic name if no user is logged in
   const displayName = user?.name || 'Alex Learner';
-  const displayRole = user?.role === 'student' ? 'Computer Science Student' : 'SkillBridge User';
+  const displayRole = user?.role === 'student' ? 'Computer Science Student' : 'INSPIRE User';
 
   return (
     <div className="mx-auto max-w-5xl py-8">

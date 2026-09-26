@@ -207,7 +207,7 @@ export default function AssessmentPage() {
         <div className="flex min-h-[50vh] flex-col items-center justify-center rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-sm">
           <Loader2 className="mb-6 h-12 w-12 animate-spin text-indigo-600" />
           <h2 className="text-2xl font-bold text-slate-900">Computing Skill Tiers...</h2>
-          <p className="mt-2 text-slate-500">Evaluating 80 responses using the SkillBridge inference engine.</p>
+          <p className="mt-2 text-slate-500">Evaluating 80 responses using the INSPIRE inference engine.</p>
         </div>
       )}
 
