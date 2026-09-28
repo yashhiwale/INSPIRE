@@ -1,12 +1,8 @@
-// src/app/Providers.tsx
-'use client';
+"use client";
 
-import { AuthProvider } from '@/components/auth/AuthContext';
+import React from "react";
+import { DemoProvider } from "@/lib/demo/store";
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <AuthProvider>
-      {children}
-    </AuthProvider>
-  );
+export default function Providers({ children }: { children: React.ReactNode }) {
+  return <DemoProvider>{children}</DemoProvider>;
 }

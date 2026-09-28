@@ -1,156 +1,336 @@
 "use client";
 
-import { useState } from "react";
-import { Users, CheckCircle2, XCircle, Clock, BookOpen, TrendingUp, ShieldCheck, AlertCircle, Award, Mail, Building } from "lucide-react";
+import { useMemo, useState } from "react";
+import DashboardShell, { ShellTab } from "@/components/dashboard/DashboardShell";
+import Badge from "@/components/common/Badge";
+import Modal from "@/components/common/Modal";
+import { useDemo } from "@/lib/demo/store";
+import {
+  ClipboardCheck,
+  BookOpenCheck,
+  UserCircle,
+  XCircle,
+  CheckCircle2,
+  ShieldCheck,
+} from "lucide-react";
 
-export default function FacultyDashboard() {
-  const [requests, setRequests] = useState([
-    { id: 1, student: "Rahul Sharma", skill: "React.js Advanced", course: "B.Tech CSE - 3rd Year", submittedDate: "2026-09-24", status: "Pending" },
-    { id: 2, student: "Priya Verma", skill: "Python Machine Learning", course: "B.Tech AI - Final Year", submittedDate: "2026-09-25", status: "Pending" },
-    { id: 3, student: "Amit Kumar", skill: "Cloud Deployment (AWS)", course: "B.Tech IT - 3rd Year", submittedDate: "2026-09-26", status: "Pending" },
-  ]);
+function statusTone(s: string) {
+  if (s === "verified") return "green";
+  if (s === "pending") return "yellow";
+  if (s === "rejected") return "red";
+  return "slate";
+}
 
-  const handleVerify = (id: number, status: string) => {
-    setRequests(requests.map(req => req.id === id ? { ...req, status } : req));
+export default function FacultyPage() {
+  const { students, passport, updatePassportStatus, opportunities } = useDemo();
+  const [activeTab, setActiveTab] = useState("queue");
+
+  // Reject modal
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectId, setRejectId] = useState<string | null>(null);
+  const [rejectNote, setRejectNote] = useState("");
+
+  // Verify modal (rubric)
+  const [verifyOpen, setVerifyOpen] = useState(false);
+  const [verifyId, setVerifyId] = useState<string | null>(null);
+  const [rubric, setRubric] = useState({
+    linkValid: false,
+    matchesClaim: false,
+    issuerOrProofVisible: false,
+  });
+
+  const tabs: ShellTab[] = [
+    { key: "queue", label: "Verification Queue", icon: ClipboardCheck },
+    { key: "alignment", label: "Curriculum Alignment", icon: BookOpenCheck },
+    { key: "profile", label: "Profile & Settings", icon: UserCircle },
+  ];
+
+  const pending = useMemo(() => passport.filter((p) => p.status === "pending"), [passport]);
+
+  const demandedSkills = useMemo(() => {
+    const all = opportunities.flatMap((o) => o.skills);
+    const count: Record<string, number> = {};
+    all.forEach((s) => (count[s] = (count[s] || 0) + 1));
+    return Object.entries(count).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  }, [opportunities]);
+
+  const openReject = (id: string) => {
+    setRejectId(id);
+    setRejectNote("");
+    setRejectOpen(true);
   };
 
+  const openVerify = (id: string) => {
+    setVerifyId(id);
+    setRubric({ linkValid: false, matchesClaim: false, issuerOrProofVisible: false });
+    setVerifyOpen(true);
+  };
+
+  const canVerify = rubric.linkValid && rubric.matchesClaim && rubric.issuerOrProofVisible;
+
   return (
-    <div className="min-h-screen bg-[#fafafa] pt-12 pb-20 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* FACULTY PROFILE BANNER */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 border border-slate-200/60 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center text-white text-3xl font-extrabold shadow-lg shadow-indigo-500/20">
-              DR
+    <DashboardShell
+      accent="violet"
+      brandSubtitle="Faculty Dashboard"
+      tabs={tabs}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+      headerTitle="Faculty"
+    >
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="max-w-6xl mx-auto space-y-6">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6">
+            <div className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
+              Faculty Console
             </div>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">Dr. R. K. Sharma</h1>
-                <span className="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wider border border-indigo-100">Verified Faculty</span>
+            <h1 className="text-2xl font-extrabold mt-1">Verification & Alignment</h1>
+            <p className="text-sm text-slate-600 mt-1">
+              MVP adds a verification rubric (checkbox-based) to demonstrate a real review process.
+            </p>
+          </div>
+
+          {activeTab === "queue" && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-extrabold">Pending Verifications</h2>
+                <Badge tone="violet">{pending.length} pending</Badge>
               </div>
-              <p className="text-slate-600 font-medium text-sm flex items-center gap-2">
-                <Building className="w-4 h-4 text-slate-400" /> Department of Computer Science & Engineering • Innovation Hub
+
+              <div className="mt-5 space-y-3">
+                {pending.length === 0 ? (
+                  <div className="text-sm text-slate-500">No pending items.</div>
+                ) : (
+                  pending.map((p) => {
+                    const st = students.find((s) => s.id === p.studentId);
+                    return (
+                      <div key={p.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <div className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
+                              {p.type} • {st?.name ?? "Student"}
+                            </div>
+                            <div className="font-extrabold text-slate-900">{p.title}</div>
+                            <div className="mt-1 text-xs text-slate-500">Skills: {p.skills?.join(", ") || "—"}</div>
+                            {p.link ? (
+                              <a className="text-xs font-extrabold text-violet-700 hover:text-violet-800" href={p.link}>
+                                Evidence link
+                              </a>
+                            ) : (
+                              <div className="text-xs text-amber-700 mt-1">
+                                Evidence link missing (still can verify for demo, but rubric expects proof).
+                              </div>
+                            )}
+                          </div>
+
+                          <Badge tone={statusTone(p.status) as any}>{p.status}</Badge>
+                        </div>
+
+                        <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                          <button
+                            onClick={() => openVerify(p.id)}
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-violet-600 text-white text-sm font-extrabold hover:bg-violet-700"
+                          >
+                            <CheckCircle2 className="h-4 w-4" />
+                            Verify (Rubric)
+                          </button>
+
+                          <button
+                            onClick={() => openReject(p.id)}
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-rose-200 text-rose-600 text-sm font-extrabold hover:bg-rose-50"
+                          >
+                            <XCircle className="h-4 w-4" />
+                            Reject
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab === "alignment" && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-6">
+              <h2 className="text-xl font-extrabold">Curriculum Alignment (MVP)</h2>
+              <p className="text-sm text-slate-600 mt-1">
+                Derived snapshot from employer-posted opportunities (industry skill intelligence).
               </p>
-              <p className="text-slate-400 text-xs mt-1 flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5" /> faculty.sharma@inspire.edu | ID: FAC-84920
-              </p>
-            </div>
-          </div>
 
-          <div className="flex gap-4 w-full md:w-auto justify-center">
-            <div className="bg-indigo-50/60 px-6 py-4 rounded-2xl border border-indigo-100 text-center">
-              <div className="text-xs font-bold text-indigo-600 uppercase">Pending Reviews</div>
-              <div className="text-2xl font-extrabold text-slate-900">{requests.filter(r => r.status === "Pending").length}</div>
-            </div>
-            <div className="bg-emerald-50/60 px-6 py-4 rounded-2xl border border-emerald-100 text-center">
-              <div className="text-xs font-bold text-emerald-600 uppercase">Batch Avg Score</div>
-              <div className="text-2xl font-extrabold text-slate-900">84/100</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Feature Grid */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          
-          {/* Main Verification Queue */}
-          <div className="lg:col-span-2 bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 border border-slate-200/60 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                <Clock className="w-5 h-5 text-indigo-600" />
-                Student Skill Verification Queue
-              </h2>
-              <span className="text-xs font-semibold text-slate-400">Live Cryptographic Signer</span>
-            </div>
-
-            <div className="space-y-4">
-              {requests.map((req) => (
-                <div key={req.id} className="p-5 rounded-2xl border border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all hover:bg-white hover:shadow-md">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-bold text-slate-900 text-base">{req.student}</span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-200/70 text-slate-700 font-semibold">{req.course}</span>
-                    </div>
-                    <p className="text-sm font-medium text-indigo-600">Skill Claim: {req.skill}</p>
-                    <p className="text-xs text-slate-400 mt-1">Submitted on {req.submittedDate}</p>
-                  </div>
-
-                  <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    {req.status === "Pending" ? (
-                      <>
-                        <button 
-                          onClick={() => handleVerify(req.id, "Verified")}
-                          className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl hover:bg-emerald-700 transition-colors shadow-sm"
-                        >
-                          <CheckCircle2 className="w-4 h-4" /> Verify
-                        </button>
-                        <button 
-                          onClick={() => handleVerify(req.id, "Rejected")}
-                          className="flex items-center gap-1.5 px-4 py-2 bg-rose-50 text-rose-600 border border-rose-200 text-xs font-bold rounded-xl hover:bg-rose-100 transition-colors"
-                        >
-                          <XCircle className="w-4 h-4" /> Reject
-                        </button>
-                      </>
-                    ) : (
-                      <span className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 ${
-                        req.status === "Verified" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
-                      }`}>
-                        {req.status === "Verified" ? <ShieldCheck className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-                        {req.status}
-                      </span>
-                    )}
+              <div className="mt-5 grid md:grid-cols-2 gap-4">
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                  <div className="font-extrabold">Top Demanded Skills</div>
+                  <div className="mt-3 space-y-2">
+                    {demandedSkills.map(([skill, c]) => (
+                      <div key={skill} className="flex items-center justify-between text-sm">
+                        <span className="font-semibold text-slate-800">{skill}</span>
+                        <span className="text-xs font-extrabold text-slate-500">{c} posts</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
-            <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] p-6 border border-slate-200/60 shadow-sm">
-              <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-indigo-600" />
-                Curriculum Alignment
-              </h3>
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-xs font-bold text-slate-700 mb-1">
-                    <span>React & Modern Web</span>
-                    <span className="text-emerald-600">92% Match</span>
+                <div className="bg-white border border-slate-200 rounded-2xl p-5">
+                  <div className="font-extrabold flex items-center gap-2">
+                    <ShieldCheck className="h-5 w-5 text-violet-600" />
+                    Recommended Academic Actions
                   </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div className="bg-emerald-500 h-full rounded-full w-[92%]"></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-xs font-bold text-slate-700 mb-1">
-                    <span>AI & Prompt Engineering</span>
-                    <span className="text-indigo-600">85% Match</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div className="bg-indigo-600 h-full rounded-full w-[85%]"></div>
-                  </div>
+                  <ul className="mt-3 text-sm text-slate-700 list-disc pl-5 space-y-2">
+                    <li>Add 1-week Git + collaboration module (2nd year).</li>
+                    <li>Make 1 evidence-based mini project mandatory.</li>
+                    <li>Introduce verification rubric for certificates & projects.</li>
+                    <li>Monthly mock interviews using employer skill checklists.</li>
+                  </ul>
                 </div>
               </div>
             </div>
+          )}
 
-            <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-[2rem] p-6 shadow-lg">
-              <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-indigo-400" />
-                Batch Health Insights
-              </h3>
-              <p className="text-indigo-200 text-xs font-medium leading-relaxed mb-4">
-                4 students identified with skill gaps. Automated remedial roadmap recommended.
+          {activeTab === "profile" && (
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-2xl">
+              <h2 className="text-xl font-extrabold">Profile & Settings (Demo)</h2>
+              <p className="text-sm text-slate-600 mt-1">
+                In full version this is tied to Supabase faculty profile and audit logs.
               </p>
-              <button className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-colors">
-                Trigger Remedial AI Path
-              </button>
+
+              <div className="mt-5 grid sm:grid-cols-2 gap-4">
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                  <div className="text-[10px] font-extrabold text-slate-500 uppercase">Role</div>
+                  <div className="text-sm font-extrabold mt-1">Faculty Reviewer</div>
+                </div>
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                  <div className="text-[10px] font-extrabold text-slate-500 uppercase">Access</div>
+                  <div className="text-sm font-extrabold mt-1">Verification Queue</div>
+                </div>
+              </div>
             </div>
-          </div>
-
+          )}
         </div>
-
       </div>
-    </div>
+
+      {/* VERIFY MODAL (Rubric) */}
+      <Modal
+        open={verifyOpen}
+        title="Verify Evidence (Rubric)"
+        onClose={() => setVerifyOpen(false)}
+        footer={
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={() => setVerifyOpen(false)}
+              className="px-4 py-2.5 rounded-xl border bg-white text-sm font-extrabold"
+            >
+              Cancel
+            </button>
+            <button
+              disabled={!canVerify}
+              onClick={() => {
+                if (!verifyId) return;
+                updatePassportStatus(verifyId, "verified", { verifiedBy: "Faculty Reviewer" });
+                setVerifyOpen(false);
+              }}
+              className={[
+                "px-4 py-2.5 rounded-xl text-sm font-extrabold",
+                canVerify ? "bg-violet-600 text-white hover:bg-violet-700" : "bg-slate-200 text-slate-500 cursor-not-allowed",
+              ].join(" ")}
+            >
+              Confirm Verify
+            </button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div className="text-sm text-slate-700">
+            Tick all checks to verify (demo-friendly but shows real-world process).
+          </div>
+
+          <label className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-2xl p-4 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-1"
+              checked={rubric.linkValid}
+              onChange={(e) => setRubric((r) => ({ ...r, linkValid: e.target.checked }))}
+            />
+            <div>
+              <div className="text-sm font-extrabold text-slate-900">Evidence link / proof is available</div>
+              <div className="text-xs text-slate-600 mt-1">Link opens or proof is present (screenshot/pdf/repo).</div>
+            </div>
+          </label>
+
+          <label className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-2xl p-4 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-1"
+              checked={rubric.matchesClaim}
+              onChange={(e) => setRubric((r) => ({ ...r, matchesClaim: e.target.checked }))}
+            />
+            <div>
+              <div className="text-sm font-extrabold text-slate-900">Claimed skill matches evidence</div>
+              <div className="text-xs text-slate-600 mt-1">Skills written align with the content.</div>
+            </div>
+          </label>
+
+          <label className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-2xl p-4 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-1"
+              checked={rubric.issuerOrProofVisible}
+              onChange={(e) =>
+                setRubric((r) => ({ ...r, issuerOrProofVisible: e.target.checked }))
+              }
+            />
+            <div>
+              <div className="text-sm font-extrabold text-slate-900">Issuer/date/ownership is visible</div>
+              <div className="text-xs text-slate-600 mt-1">Certificate issuer/date OR repo ownership is clear.</div>
+            </div>
+          </label>
+
+          {!canVerify ? (
+            <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+              Complete all checks to enable verification.
+            </div>
+          ) : null}
+        </div>
+      </Modal>
+
+      {/* REJECT MODAL */}
+      <Modal
+        open={rejectOpen}
+        title="Reject Evidence"
+        onClose={() => setRejectOpen(false)}
+        footer={
+          <div className="flex items-center justify-end gap-2">
+            <button
+              onClick={() => setRejectOpen(false)}
+              className="px-4 py-2.5 rounded-xl border bg-white text-sm font-extrabold"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                if (!rejectId) return;
+                updatePassportStatus(rejectId, "rejected", {
+                  verifiedBy: "Faculty Reviewer",
+                  note: rejectNote || "Insufficient evidence",
+                });
+                setRejectOpen(false);
+              }}
+              className="px-4 py-2.5 rounded-xl bg-rose-600 text-white text-sm font-extrabold hover:bg-rose-700"
+            >
+              Reject
+            </button>
+          </div>
+        }
+      >
+        <div>
+          <div className="text-sm font-semibold text-slate-700">Reason (optional)</div>
+          <textarea
+            value={rejectNote}
+            onChange={(e) => setRejectNote(e.target.value)}
+            className="mt-2 w-full min-h-[110px] bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm"
+            placeholder="e.g., Missing proof / mismatch with claimed skills / unclear certificate..."
+          />
+        </div>
+      </Modal>
+    </DashboardShell>
   );
 }
