@@ -38,7 +38,7 @@ function Stepper({
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
-            INSPIRE Journey (MVP)
+            SkillBridge Journey (MVP)
           </div>
           <h2 className="text-lg font-extrabold text-slate-900 mt-1">
             Potential → Skills → Verification → Opportunities

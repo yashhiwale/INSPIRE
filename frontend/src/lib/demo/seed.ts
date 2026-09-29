@@ -1,6 +1,6 @@
 import { DemoState } from "./types";
 
-export const DEMO_STORAGE_KEY = "inspire_demo_v1";
+export const DEMO_STORAGE_KEY = "SkillBridge_demo_v1";
 
 export function seedState(): DemoState {
   const now = new Date().toISOString();

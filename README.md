@@ -1,12 +1,12 @@
-# INSPIRE
+# SkillBridge
 
 ## Academia–Industry Collaboration Platform
 
-INSPIRE is an intelligent skill-first platform connecting:
+SkillBridge is an intelligent skill-first platform connecting:
 
 Student ↔ Academia ↔ Industry
 
-The platform aims to INSPIRE:
+The platform aims to SkillBridge:
 
 Academic Education
 → Skills

@@ -22,7 +22,7 @@ function Chip({ text, tone }: { text: string; tone: any }) {
   );
 }
 
-const SHORTLIST_KEY = "inspire_employer_shortlist_v1";
+const SHORTLIST_KEY = "SkillBridge_employer_shortlist_v1";
 
 export default function EmployerPage() {
   const {

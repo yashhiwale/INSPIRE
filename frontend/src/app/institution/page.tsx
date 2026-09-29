@@ -284,7 +284,7 @@ export default function InstitutionPage() {
                   <div className="text-[10px] font-extrabold text-slate-500 uppercase">
                     Institution
                   </div>
-                  <div className="text-sm font-extrabold mt-1">INSPIRE Demo Campus</div>
+                  <div className="text-sm font-extrabold mt-1">SkillBridge Demo Campus</div>
                 </div>
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4">
                   <div className="text-[10px] font-extrabold text-slate-500 uppercase">

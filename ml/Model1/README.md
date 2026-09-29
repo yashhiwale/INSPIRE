@@ -1,4 +1,4 @@
-# INSPIRE - Model 1
+# SkillBridge - Model 1
 
 ## AI/ML Student Career Guidance System
 

@@ -41,7 +41,7 @@ export default function LandingPage() {
               <BrainCircuit className="w-5 h-5 text-white" />
             </div>
             <span className="font-extrabold text-xl tracking-tight text-slate-900">
-              INSPIRE
+              SkillBridge
             </span>
           </div>
 
@@ -194,7 +194,7 @@ export default function LandingPage() {
                 Dedicated Command Centers
               </h2>
               <p className="text-slate-500 font-medium">
-                Select your role to access specialized tools tailored for your needs within the INSPIRE ecosystem.
+                Select your role to access specialized tools tailored for your needs within the SkillBridge ecosystem.
               </p>
             </motion.div>
 
@@ -335,7 +335,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm font-medium text-slate-500">
           <div className="flex items-center gap-2">
             <BrainCircuit className="w-4 h-4 text-indigo-600" />
-            <span className="font-bold text-slate-900 tracking-tight">INSPIRE Ecosystem</span>
+            <span className="font-bold text-slate-900 tracking-tight">SkillBridge Ecosystem</span>
           </div>
           <p>© 2024 Built for Smart India Hackathon. All rights reserved.</p>
         </div>

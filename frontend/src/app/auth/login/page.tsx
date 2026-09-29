@@ -65,7 +65,7 @@ export default function LoginPage() {
             </form>
             
             <div className="mt-8 text-center text-sm font-medium text-slate-500">
-              New to INSPIRE? <Link href="/auth/register" className="text-indigo-600 font-bold hover:underline">Create an account</Link>
+              New to SkillBridge? <Link href="/auth/register" className="text-indigo-600 font-bold hover:underline">Create an account</Link>
             </div>
           </div>
         </div>

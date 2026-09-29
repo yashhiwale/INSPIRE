@@ -51,7 +51,7 @@ export default function RegisterPage() {
     setLoading(true);
     setErrorMsg("");
 
-    // Preparing rich dynamic meta data based on INSPIRE ecosystem needs
+    // Preparing rich dynamic meta data based on SkillBridge ecosystem needs
     let metaData: any = { first_name: firstName, last_name: lastName, role: selectedRole };
     
     if (selectedRole === "student") {
@@ -92,7 +92,7 @@ export default function RegisterPage() {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-xl shadow-indigo-500/20 mb-6 group hover:scale-105 transition-transform">
             <BrainCircuit className="w-7 h-7" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">Join the INSPIRE Ecosystem</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">Join the SkillBridge Ecosystem</h1>
           <p className="text-slate-500 text-lg font-medium max-w-2xl mx-auto leading-relaxed">
             A unified intelligence layer bridging academia and industry. Select your stakeholder role to set up your dedicated workspace.
           </p>

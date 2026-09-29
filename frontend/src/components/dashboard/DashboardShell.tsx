@@ -93,8 +93,8 @@ export default function DashboardShell({
         <div className="flex flex-col leading-tight">
           <div className="h-7 w-[160px] relative">
             <Image
-              src="/inspire-wordmark.png"
-              alt="INSPIRE"
+              src="/SkillBridge-wordmark.png"
+              alt="SkillBridge"
               fill
               className="object-contain object-left"
               priority
@@ -199,8 +199,8 @@ export default function DashboardShell({
           {/* Wordmark tiny in header right */}
           <div className="h-7 w-[110px] relative">
             <Image
-              src="/inspire-wordmark.png"
-              alt="INSPIRE"
+              src="/SkillBridge-wordmark.png"
+              alt="SkillBridge"
               fill
               className="object-contain object-right"
             />
